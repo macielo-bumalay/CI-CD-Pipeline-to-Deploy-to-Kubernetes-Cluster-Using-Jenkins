@@ -17,7 +17,7 @@ Welcome! this project is designed to construct a CI/CD pipeline from scratch. To
 This section is dedicated to the creation of an AWS EC2 Virtual Server instance. As part of this project, we will be setting up three EC2 instances for Jenkins, Ansible, and Kubernetes. We can revisit this module in "[Section 2]: Jenkins", “[Section 5]: Ansible" and "[Section 7]: Kubernetes" sections.
 
 
-  Step 1. `Set up an EC2 instance` 
+  Step 1. Set up an EC2 instance
 
     Sign in to AWS Console: Log in to your AWS Management Console.
     Navigate to EC2 Dashboard: Go to the EC2 Dashboard by selecting “Services” in the top menu and then choosing “EC2” under the Compute section.
@@ -37,7 +37,7 @@ This section is dedicated to the creation of an AWS EC2 Virtual Server instance.
     
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/EC2.png?raw=true) <br>
  
-  Step 2. `Access the instance remotely` <br>
+  Step 2. Access the instance remotely <br>
   Install MobaXterm 
   
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/moba.png?raw=true) <br>
@@ -45,7 +45,7 @@ This section is dedicated to the creation of an AWS EC2 Virtual Server instance.
 <h3>[Section 2]: Jenkins Server</h3> 
 Jenkins is a free and open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. 
 
-Step 1. `Install Jenkins`
+Step 1. Install Jenkins
                             
     Update Package Repositories: sudo yum update -y
     Add Jenkins Repository: sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
@@ -58,10 +58,49 @@ Step 1. `Install Jenkins`
       Access Jenkins: Jenkins web interface is available at http://your_server_ip:8080. Open this URL in your web browser.
       Unlock Jenkins: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
   
+Step 2. Rename the Hostname
 
+      cd /etc/
+      vi hostname
+
+Step 3. Reboot the server
+
+      init 6
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/macielo-bumalay-patch-1/img/2.png?raw=true) <br>
+  The hostname has been changed! <br>
+     ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/macielo-bumalay-patch-1/img/3.png?raw=true) 
+
+Step 4. Create a shell script to easily access the Jenkins
+
+    #!/bin/bash
+        java -jar /path/to/jenkins.war
+        
+Step 5. Provide executable permissions to run Jenkins
+
+    chmod +x script.sh
+    
+Step 6. Let’s run the  script
+
+    ./script.sh
+    
+Step 7. Now copy the public IP address of ec2 and paste it into the browser
+
+    <Ec2-ip:8080>
+  In this project I use port `8082` instead of `8080`
+   ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/macielo-bumalay-patch-1/img/4.png?raw=true) 
+
+Step 8. Provide the below command for the Administrator password
+
+      sudo cat /var/lib/jenkins/secrets/initialAdminPassword
  
+Step 9. `Install suggested plugins` ----> `Create a user Account` ----> `Click on save and continue`
+
+  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/macielo-bumalay-patch-1/img/7.png?raw=true) 
+
+   
+  Step 1. `` <br>
+  Step 2. `` <br>
   Step 3. `` <br>
-  Step 4. `` <br>
   Step 5. `` <br>
   Step 6. `` <br>
   Step 7. `` <br>
