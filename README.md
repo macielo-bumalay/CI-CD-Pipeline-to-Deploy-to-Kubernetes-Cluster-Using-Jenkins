@@ -48,12 +48,13 @@ Jenkins is a free and open source automation server. It helps automate the parts
 Step 1. `Install Jenkins`
                             
     Update Package Repositories: sudo yum update -y
-    Install Java: sudo yum install java-1.8.0-openjdk -y
     Add Jenkins Repository: sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
       Import Jenkins Key: sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+      Install Java: sudo amazon-linux-extras install java-openjdk11 -y
       Install Jenkins: sudo yum install jenkins -y
-      Start Jenkins Service:  sudo service jenkins start
-                              sudo chkconfig jenkins on
+      Install fontconfig: sudo yum install fontconfig java-11-openjdk -y
+      Start Jenkins Service:  sudo systemctl start jenkins
+                              sudo systemctl status jenkins
       Access Jenkins: Jenkins web interface is available at http://your_server_ip:8080. Open this URL in your web browser.
       Unlock Jenkins: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
   
