@@ -45,6 +45,7 @@ This section is dedicated to the creation of an AWS EC2 Virtual Server instance.
 <h3>[Section 2]: Jenkins Server</h3> 
 Jenkins is a free and open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. 
 
+
 Step 1. Install Jenkins
                             
     Update Package Repositories: sudo yum update -y
@@ -107,6 +108,42 @@ Step 9. `Install suggested plugins` ----> `Create a user Account` ----> `Click o
   Step 8. `` <br>
 
 <h3>[Section 3]: Apache Maven</h3>
+Apache Maven is a widely used build automation and project management tool in software development. It streamlines the process of compiling, testing, and packaging code by managing project dependencies and providing a consistent build lifecycle.
+
+
+Step 1. Go to `/opt` directory 
+
+    cd /opt/
+    
+Step 2. Use this command to download Apache Maven
+
+    sudo wget https://dlcdn.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz
+To find the latest official Apache Maven release, use the link https://maven.apache.org/download.cgi.    
+
+
+Step 3. Use this command, to extract Apache Maven from the downloaded archive
+
+    sudo tar -xvzf apache-maven-3.9.4-bin.tar.gz
+    
+Step 4. Now copy the public IP address of ec2 and paste it into the browser
+
+    <Ec2-ip:8080>
+    
+Step 4. Now copy the public IP address of ec2 and paste it into the browser
+
+    <Ec2-ip:8080>
+
+Step 4. Now copy the public IP address of ec2 and paste it into the browser
+
+    <Ec2-ip:8080>
+
+Step 4. Now copy the public IP address of ec2 and paste it into the browser
+
+    <Ec2-ip:8080>
+
+Step 4. Now copy the public IP address of ec2 and paste it into the browser
+
+    <Ec2-ip:8080>
 
 <h3>[Section 4]: Git and Github</h3>
 Git is software for tracking changes in any set of files, usually used for coordinating work among programmers collaboratively developing source code during software development. 
