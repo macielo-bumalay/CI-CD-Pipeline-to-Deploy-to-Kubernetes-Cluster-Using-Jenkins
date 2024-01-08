@@ -1,5 +1,5 @@
-# Building a CI/CD Pipeline with AWS, Jenkins, Docker, Ansible, Git, Github, Apache Maven, and Kubernetes
-Welcome! this project is designed to construct a CI/CD pipeline from scratch. To achieve this, we'll leverage the capabilities of modern DevOps tools such as AWS, Jenkins, Docker, Ansible, Git, Github, Apache Maven, and Kubernetes. Let's embark on this learning journey together!
+# Building a CI/CD Pipeline for a Java Based Application
+Welcome! this project is designed to construct a CI/CD pipeline for a Java Based Application "Pet Clinic". To achieve this, we'll leverage the capabilities of modern DevOps tools such as AWS, Jenkins, Docker, Trivy, Git, Github, Sonarqube, Apache Maven, and Sonarqube. Let's embark on this learning journey together!
 
 <h3> Overview</h3>
   <ul>
@@ -38,7 +38,7 @@ This section is dedicated to the creation of an AWS EC2 Virtual Server instance.
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/EC2.png?raw=true) <br>
  
   Step 2. Access the instance remotely <br>
-  Install MobaXterm 
+  Install MobaXterm to access the EC2 Instance remotely
   
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/moba.png?raw=true) <br>
   
