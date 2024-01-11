@@ -141,19 +141,15 @@ Enter this in Pipeline Script
 
           pipeline {
               agent any 
-              
               tools{
                   jdk 'jdk11'
                   maven 'maven3'
               }
-      
                stages{
-                  
                        stage ('checkout scm'){
                           steps {checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git']])
                           }
               }
-  
               stage("Compile"){
                   steps{
                       sh "mvn clean compile"
@@ -166,3 +162,174 @@ Enter this in Pipeline Script
 
 
 ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P5.png?raw=true) 
+
+
+Configure Sonar Server
+
+ Click on `Administration` --> `Security` --> `Users` --> Click on `Tokens and Update Token`  --> Give it a name  --> and click on `Generate Token`
+ Click on Update Token
+
+
+
+ Dashboard --> Real-World CI-CD --> Pipeline Syntax --> Steps
+
+
+
+
+
+
+        pipeline {
+            agent any 
+            tools{
+                jdk 'jdk11'
+                maven 'maven3'
+            }
+             stages{
+                     stage ('checkout scm'){
+                        steps {checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git']])
+                        }
+            }
+            stage("Compile"){
+                steps{
+                    sh "mvn clean compile"
+                }
+            }
+            stage("Sonarqube Analysis"){
+               steps{
+                   script{withSonarQubeEnv(credentialsId: 'Sonar-token') {
+                       sh "mvn sonar:sonar"
+                      }
+                   }
+               }    
+            }
+            stage("Quality Gate"){
+               steps{
+                   script{waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                   }  
+               }
+                
+            }
+     }
+}
+
+
+
+
+Dashboard --> Manage Jenkins --> Tools DP
+
+        pipeline {
+            agent any 
+
+            tools{
+                jdk 'jdk11'
+                maven 'maven3'
+            }
+    
+             stages{
+                
+                     stage ('checkout scm'){
+                        steps {checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git']])
+                        }
+            }
+
+                      stage("Compile"){
+                          steps{
+                              sh "mvn clean compile"
+                          }
+                      }
+                      stage("Sonarqube Analysis"){
+                         steps{
+                             script{withSonarQubeEnv(credentialsId: 'Sonar-token') {
+                                 sh "mvn sonar:sonar"
+                                }
+                                 
+                             }
+                         }
+                          
+                      }
+                      stage("Quality Gate"){
+                         steps{
+                             script{waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                             }  
+                         }
+                          
+                      }
+                      stage("OWASP Dependency Check"){
+                          steps{
+                               dependencyCheck additionalArguments: '--scan ./ --format HTML ', odcInstallation: 'DP-Check'
+                               dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                          }
+                      }
+                      stage("Build war file"){
+                          steps{
+                              sh "mvn clean install package"
+                          }
+                      }
+                  }
+          
+               }
+
+
+OWASP DP 
+
+
+    pipeline {
+    agent any 
+    
+    tools{
+        jdk 'jdk11'
+        maven 'maven3'
+    }
+    
+    stages{
+        
+        stage ('checkout scm'){
+                        steps {checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git']])
+               }
+            }
+        
+        stage("Compile"){
+            steps{
+                sh "mvn clean compile"
+            }
+        }
+        
+         stage("Test Cases"){
+            steps{
+                sh "mvn test"
+            }
+        }
+        stage("Sonarqube Analysis "){
+            steps{
+                script {
+                withSonarQubeEnv(credentialsId: 'Sonar-token') {
+                sh 'mvn sonar:sonar'
+                }
+              }
+            }
+        }
+      
+        stage("Build"){
+            steps{
+                sh " mvn clean install"
+            }
+        }
+        
+          stage("OWASP Dependency Check"){
+            steps{
+                dependencyCheck additionalArguments: '--scan ./ ' , odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        
+    }
+}
+
+
+
+
+
+
+
+
+
