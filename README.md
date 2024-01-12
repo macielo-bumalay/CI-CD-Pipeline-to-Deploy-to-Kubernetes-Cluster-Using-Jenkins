@@ -1,25 +1,34 @@
 # Building a CI/CD Pipeline for a Java Based Application
-Welcome! this project is designed to construct a CI/CD pipeline for a Java Based Application "Pet Clinic". To achieve this, we'll leverage the capabilities of modern DevOps tools such as AWS, Jenkins, Docker, Trivy, Git, Github, Sonarqube, Apache Maven, and Sonarqube. Let's embark on this learning journey together!
+Welcome! this project is designed to construct a CI/CD pipeline for a Java Based Application "Pet Clinic". To achieve this, we'll leverage the capabilities of modern DevOps tools. Let's embark on this learning journey together!
 
-![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/banner.png?raw=true) <br>
+![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/banner.png?raw=true) <br
+                                                                                                     
+<h3>[Section 1]: Set up an EC2 instance and Install Jenkins </h3>
+                                                                                              
 
+  `Sign in to AWS Console:` Log in to your AWS Management Console.
 
-  Step 1. Set up an EC2 instance and Install Jenkins
-
-    Sign in to AWS Console: Log in to your AWS Management Console.
-    Navigate to EC2 Dashboard: Go to the EC2 Dashboard by selecting “Services” in the top menu and then choosing “EC2” under the Compute section.
-    Launch Instance: Click on the “Launch Instance” button to start the instance creation process.
-    Choose an Amazon Machine Image (AMI): Selecta machine with the Free tier eligible tag. For example, you can choose Ubuntu.
-    Choose an Instance Type: In the “Choose Instance Type” step, select t2.large as your instance type. Proceed by clicking “Next: Configure Instance Details.”
-        For “Storage,”  set the size to 29GB.
-    Configure Security Group:
-        Choose an existing security group or create a new one.
-        Ensure the security group has the necessary inbound/outbound rules to allow access as required.
-    Review and Launch: Review the configuration details. Ensure everything is set as desired.
-    Select Key Pair:
+ `Navigate to EC2 Dashboard:` Go to the EC2 Dashboard by selecting “Services” in the top menu and then choosing “EC2” under the Compute section.
+  
+ `Launch Instance:` Click on the “Launch Instance” button to start the instance creation process.
+    
+ `Choose an Amazon Machine Image (AMI):` Select a machine for example, you can choose Ubuntu.
+   
+ `Choose an Instance Type:` Select t2.large as your instance type. Proceed by clicking “Next: Configure Instance Details.”
+  
+ `For Storage:` I set the size to 29GB.
+ 
+ `Configure Security Group:` Choose an existing security group or create a new one. Ensure the security group has the necessary inbound/outbound rules to allow access as required.
+ 
+ `Review and Launch:` Review the configuration details. Ensure everything is set as desired.
+ 
+ `Select Key Pair:`
         Select “Create a key pair” and choose the key pair from the drop down.
         Acknowledge that you have access to the selected private key file.
-    In the "Advance details" ----> "User data" section enter this script to automatically install Jenkins
+
+
+
+ In the "Advance details" ----> "User data" section enter this script to automatically install Jenkins
        
         #!/bin/bash
           sudo apt update -y
@@ -39,49 +48,42 @@ Welcome! this project is designed to construct a CI/CD pipeline for a Java Based
           sudo systemctl start jenkins
           sudo systemctl status jenkins
           
-    Click “Launch Instances” to create the instance.
+Click “Launch Instances” to create the instance.
+
 
 ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P1.png?raw=true) <br>
-    
- Step 2. Access the instance remotely <br>
-        Install MobaXterm to access the EC2 Instance remotely
+
+  
+ `Access the instance remotely:`  Install MobaXterm to access the EC2 Instance remotely
   
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/moba.png?raw=true) <br>
      
- Step 3. Access the EC2 Instance: 
+  `Access the EC2 Instance: ` Enter Instance's IP address and 8080 as port
 
      <Ec2-ip:8080>
 
- Step 4. Provide the below command for the Administrator password
+<h3>[Section 2]: Create an Executable Scripts and Install Plugins </h3>
 
-      sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/macielo-bumalay-patch-1/img/4.png?raw=true) 
+  <h4>Step 1. Install Docker</h4>
   
-Step 5. `Install suggested plugins` ----> `Create a user Account` ----> `Click on save and continue`
-
-  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/macielo-bumalay-patch-1/img/7.png?raw=true)
+  Create a script  `vi docker.sh`
   
+        sudo apt-get update
+        sudo apt-get install docker.io -y
+        sudo usermod -aG docker ubuntu
+        newgrp docker
+        sudo chmod 777 /var/run/docker.sock 
+        docker ps
 
-Step 6. Install Docker
-
-Create a script  `vi docker.sh`
-
-      sudo apt-get update
-      sudo apt-get install docker.io -y
-      sudo usermod -aG docker ubuntu
-      newgrp docker
-      sudo chmod 777 /var/run/docker.sock 
-      docker ps
-
-Change file permission and run it
-
-      chmod 700 docker.sh
-      ./docker.sh
-      sudo systemctl enable docker
-      docker ps
-
-      
-Create a Sonarqube container
+  Change file permission and run it
+  
+        chmod 700 docker.sh
+        ./docker.sh
+        sudo systemctl enable docker
+        docker ps
+  
+        
+  <h4>Step 2. Create a Sonarqube container</h4>
 
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P2.png?raw=true) 
 
@@ -91,23 +93,22 @@ Create a Sonarqube container
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P3.png?raw=true) 
 
    
-Step 7. Install Trivy
+  <h4>Step 3. Install Trivy</h4>
+  
+  Create a script  `vi trivy.sh`
+   
+      sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+      wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+      echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.lis 
+      sudo apt-get update
+      sudo apt-get install trivy -y
 
-Create a script  `vi trivy.sh`
- 
-    sudo apt-get install wget apt-transport-https gnupg lsb-release -y
-    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
-    echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.lis 
-    sudo apt-get update
-    sudo apt-get install trivy -y
+  Change file permission and run it
+  
+        chmod 700 trivy.sh
+        ./trivy.sh
 
-Change file permission and run it
-
-      chmod 700 trivy.sh
-      ./trivy.sh
-
-
-Step 8. Install Plugins
+<h4>Step 4. Install Plugins</h4>
 
 Goto `Manage Jenkins` --> `Plugins` --> `Available Plugins`
 
@@ -118,26 +119,23 @@ Install below plugins
 
 2 → SonarQube Scanner 
 
-Step 9. Configure Java & Maven in Global Tool Configuration
 
+Configure Java & Maven in Global Tool Configuration:   Go to `Manage Jenkins` --> `Tools` --> `Install JDK and Maven3` --> `Click on Apply and Save`
 
-Go to `Manage Jenkins` --> `Tools` --> `Install JDK and Maven3` --> `Click on Apply and Save`
-
-Step 10. Create a Job
+<h3> Create a Job </h3>
 
 You can name it as `Real-World CI-CD`, click on Pipeline and proceed.
 
 
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P4.png?raw=true) 
 
-Step 10. In the Configuration 
+<h3>[Section 3]:  Create a Pipeline Scripts </h3>
+ <h3> </h3>
 
-`Pipeline` --> `Pipeline Syntax` --> `Steps` --> `Checkout from Version Control`
-https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git
+Go to `Pipeline` --> `Pipeline Syntax` --> `Steps` --> `Checkout from Version Control` https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git
 --> `Generate Pipeline Script`
 
 Enter this in Pipeline Script
-
 
           pipeline {
               agent any 
@@ -149,31 +147,53 @@ Enter this in Pipeline Script
                        stage ('checkout scm'){
                           steps {checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git']])
                           }
+                        }
+                        stage("Compile"){
+                            steps{
+                                sh "mvn clean compile"
+                            }
+                        }
+                 }
               }
-              stage("Compile"){
-                  steps{
-                      sh "mvn clean compile"
-                  }
-              }
-       }
-    }
   
   
-
+You will see the stage view like this
 
 ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P5.png?raw=true) 
 
-
-Configure Sonar Server
+ <h3> Configure Sonar Server </h3>
 
  Click on `Administration` --> `Security` --> `Users` --> Click on `Tokens and Update Token`  --> Give it a name  --> and click on `Generate Token`
  Click on Update Token
 
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P6.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P7.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P8.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P9.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P10.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P11.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P12.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P13.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P14.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P15.png?raw=true) 
+ 
+ ![alt text](?raw=true) 
+
+ ![alt text](?raw=true) 
+
+ ![alt text](?raw=true) 
 
 
  Dashboard --> Real-World CI-CD --> Pipeline Syntax --> Steps
-
-
 
 
 
