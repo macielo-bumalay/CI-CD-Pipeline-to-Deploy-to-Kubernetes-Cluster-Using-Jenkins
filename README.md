@@ -1,7 +1,7 @@
 # Building a CI/CD Pipeline for a Java Based Application
 Welcome! this project is designed to construct a CI/CD pipeline for a Java Based Application "Pet Clinic". To achieve this, we'll leverage the capabilities of modern DevOps tools. Let's embark on this learning journey together!
 
-![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/banner.png?raw=true) <br
+![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/banner.png?raw=true) 
                                                                                                      
 <h3>[Section 1]: Set up an EC2 instance and Install Jenkins </h3>
                                                                                               
@@ -163,38 +163,33 @@ You will see the stage view like this
 
  <h3> Configure Sonar Server </h3>
 
+   `Access the Sonar Server: ` Enter Instance's IP address and 9000 as port
+
+     <Ec2-ip:9000>
+
  Click on `Administration` --> `Security` --> `Users` --> Click on `Tokens and Update Token`  --> Give it a name  --> and click on `Generate Token`
  Click on Update Token
 
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P6.png?raw=true) 
 
+ <h4>Here what it looks like</h4>
+
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P7.png?raw=true) 
+
+  We will configure different tools that we install using Plugins in >>>  `Global Tool Configuration`
 
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P8.png?raw=true) 
 
- ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P9.png?raw=true) 
+  <h5>Install sonar-scanner in tools</h5>
 
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P10.png?raw=true) 
 
- ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P11.png?raw=true) 
+ <h4> Go to Dashboard --> Real-World CI-CD --> Pipeline Syntax --> Steps</h4>
 
- ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P12.png?raw=true) 
-
- ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P13.png?raw=true) 
-
- ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P14.png?raw=true) 
-
- ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P15.png?raw=true) 
- 
- ![alt text](?raw=true) 
-
- ![alt text](?raw=true) 
-
- ![alt text](?raw=true) 
+  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P11.png?raw=true) 
 
 
- Dashboard --> Real-World CI-CD --> Pipeline Syntax --> Steps
-
+ <h4>Lets goto our Pipeline and add Sonar-qube Stage in our Pipeline Script</h4>
 
 
 
@@ -222,75 +217,42 @@ You will see the stage view like this
                    }
                }    
             }
-            stage("Quality Gate"){
-               steps{
-                   script{waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
-                   }  
-               }
-                
+            
             }
      }
 }
 
+<h4>To see the report, you can goto Sonarqube Server and goto >>> Projects.  Here is what it looks like </h4>
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P12.png?raw=true) 
+
+<h3>[Section 4]: Install OWASP Dependency Check Plugins</h3>
 
 
+Goto Dashboard >>> Manage Jenkins >>> Plugins >>> OWASP Dependency-Check. Click on it and install without restart.
 
-Dashboard --> Manage Jenkins --> Tools DP
+Next is to configure it in the Configuration Tool.  Click on Apply and Save
 
-        pipeline {
-            agent any 
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P13.png?raw=true) 
 
-            tools{
-                jdk 'jdk11'
-                maven 'maven3'
+Add this stage to the Pipeline
+
+
+     stage("Build"){
+              steps{
+                  sh " mvn clean install"
+              }
+          }
+        
+          stage("OWASP Dependency Check"){
+            steps{
+                dependencyCheck additionalArguments: '--scan ./ ' , odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
-    
-             stages{
-                
-                     stage ('checkout scm'){
-                        steps {checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git']])
-                        }
-            }
-
-                      stage("Compile"){
-                          steps{
-                              sh "mvn clean compile"
-                          }
-                      }
-                      stage("Sonarqube Analysis"){
-                         steps{
-                             script{withSonarQubeEnv(credentialsId: 'Sonar-token') {
-                                 sh "mvn sonar:sonar"
-                                }
-                                 
-                             }
-                         }
-                          
-                      }
-                      stage("Quality Gate"){
-                         steps{
-                             script{waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
-                             }  
-                         }
-                          
-                      }
-                      stage("OWASP Dependency Check"){
-                          steps{
-                               dependencyCheck additionalArguments: '--scan ./ --format HTML ', odcInstallation: 'DP-Check'
-                               dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-                          }
-                      }
-                      stage("Build war file"){
-                          steps{
-                              sh "mvn clean install package"
-                          }
-                      }
-                  }
-          
-               }
+        }
 
 
-OWASP DP 
+<h4> Here's how the Pipeline looks like </h4>
 
 
     pipeline {
@@ -347,9 +309,190 @@ OWASP DP
 
 
 
+<h4>The stage view would look like this</h4>
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P14.png?raw=true) 
+
+ <h4>A graph will also be generated in the status</h4>
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P15.png?raw=true) 
 
 
 
+ <h3>[Section 5]:  Docker Image Build and Push</h3>
 
+ Goto Dashboard >>> Manage Plugins >>> Available plugins >>> Search for Docker and install these plugins
+  
+ 
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P16.png?raw=true) 
+
+ Now configure it in the Configuration Tool.  Click on Apply and Save
+
+   ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P19.png?raw=true)
+
+
+  Add your DockerHub Username and Password under Global Credentials
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P18.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P17.png?raw=true) 
+
+  Add this stage in Pipeline Script
+
+  
+        stage("Build and Push to DockerHub"){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'docker', toolName: "docker") {
+                        sh "docker build -t petclinic1 ."
+                        sh "docker tag petclinic1 macielo/pet-clinic123:latest "
+                        sh "docker push macielo/pet-clinic123:latest "
+                    }
+                }
+
+  Here is the stage view after the stage Build and Push to DockerHub has been added
+  
+  Now go to your CLI and enter this command
+
+     docker images 
+
+  This should appear in your screen.
+
+  
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P22.png?raw=true) 
+
+
+ Log in to your Dockerhub account, you will see a new image is created
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P21.png?raw=true) 
+
+ <h3>[Section 6]:  Deploy image using Docker</h3>
+
+ 
+Add this stage to the Pipeline
+
+
+       stage("Trivy"){
+                steps{
+                    sh "trivy image macielo/pet-clinic123:latest"
+                }
+            }
+            stage("Deploy to Container"){
+                steps{
+                    sh " docker run -d --name pet1 -p 8082:8080 macielo/pet-clinic123:latest "
+                }
+            }
+    
+  You will see the Stage View like this
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P23.png?raw=true) 
+
+
+ In your CLI and enter this command that will show a list of the currently running Docker containers on your system.
+
+     docker ps 
+
+  This should appear in your screen.
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P26.png?raw=true) 
+
+  `Access the container: ` Enter Instance's IP address and 8082 as port
+
+     <Ec2-ip:8082>
+
+
+  Tada! here is your fully deployed Java Based Application
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P24.png?raw=true) 
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P25.png?raw=true) 
+
+
+ <h3>[Section 5]:  Terminate the AWS EC2 Instance</h3>
+ 
+  Lastly, do not forget to terminate the AWS EC2 Instance.
+
+ Goto EC2 Dashboard >>> Instances >>> Select the instance you want to terminate >>> Click instance state >>> STOP
+
+
+
+Here is the complete Pipeline Script
+
+
+      pipeline {
+        agent any 
+        
+        tools{
+            jdk 'jdk11'
+            maven 'maven3'
+        }
+        
+        stages{
+            
+            stage ('checkout scm'){
+                            steps {checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Aj7Ay/amazon-eks-jenkins-terraform-aj7.git']])
+                   }
+                }
+            
+            stage("Compile"){
+                steps{
+                    sh "mvn clean compile"
+                }
+            }
+            
+             stage("Test Cases"){
+                steps{
+                    sh "mvn test"
+                }
+            }
+            stage("Sonarqube Analysis "){
+                steps{
+                    script {
+                    withSonarQubeEnv(credentialsId: 'Sonar-token') {
+                    sh 'mvn sonar:sonar'
+                    }
+                  }
+                }
+            }
+          
+            stage("Build"){
+                steps{
+                    sh " mvn clean install"
+                }
+            }
+            
+            stage("OWASP Dependency Check"){
+                steps{
+                    dependencyCheck additionalArguments: '--scan ./ ' , odcInstallation: 'DP-Check'
+                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                }
+            }
+            stage("Build and Push to DockerHub"){
+                steps{
+                    script{
+                        withDockerRegistry(credentialsId: 'docker', toolName: "docker") {
+                            sh "docker build -t petclinic1 ."
+                            sh "docker tag petclinic1 macielo/pet-clinic123:latest "
+                            sh "docker push macielo/pet-clinic123:latest "
+                        }
+                    }
+                }
+            }
+            stage("Trivy"){
+                steps{
+                    sh "trivy image macielo/pet-clinic123:latest"
+                }
+            }
+            stage("Deploy to Container"){
+                steps{
+                    sh " docker run -d --name pet1 -p 8082:8080 macielo/pet-clinic123:latest "
+                }
+            }
+        }
+    }
+
+
+ 
+
+ Reference: https://www.youtube.com/watch?v=Rj9oQHC12c4
 
 
