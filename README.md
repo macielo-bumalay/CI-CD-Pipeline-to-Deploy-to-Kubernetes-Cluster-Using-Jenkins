@@ -407,7 +407,7 @@ Add this stage to the Pipeline
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P25.png?raw=true) 
 
 
- <h3>[Section 5]:  Terminate the AWS EC2 Instance</h3>
+ <h3>[Section 6]:  Terminate the AWS EC2 Instance</h3>
  
   Lastly, do not forget to terminate the AWS EC2 Instance.
 
