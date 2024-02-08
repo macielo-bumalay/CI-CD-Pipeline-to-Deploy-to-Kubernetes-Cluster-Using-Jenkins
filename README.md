@@ -58,11 +58,11 @@ Click “Launch Instances” to create the instance.
   
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/moba.png?raw=true) <br>
      
-  `Access the EC2 Instance: ` Enter Instance's IP address and 8080 as port
+  `Access the EC2 Instance: ` Enter Instance's IP address on your browser
 
-     <Ec2-ip:8080>
+     <Ec2-ip>
 
-<h3>[Section 2]: Create an Executable Scripts and Install Plugins </h3>
+<h3>[Section 2]: Create an Executable Scripts </h3>
 
   <h4>Step 1. Install Docker</h4>
   
@@ -108,9 +108,35 @@ Click “Launch Instances” to create the instance.
         chmod 700 trivy.sh
         ./trivy.sh
 
-<h4>Step 4. Install Plugins</h4>
+<h4>Step 4. Setup Jenkins and Install Plugins</h4>
 
-Goto `Manage Jenkins` --> `Plugins` --> `Available Plugins`
+  `Access the Jenkins Server: ` Enter Instance's IP address and 8080 as port
+
+     <Ec2-ip:8080>
+ 
+ But first we need to unlock it by providing an Admin Password. 
+
+
+ Go back to your terminal and enter this command `cat /var/lib/jenkins/secrets/initialAdminPassword`
+     
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-2/blob/main/img/a12.png?raw=true) 
+
+ Now, click on `Install suggested Plugins`
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-2/blob/main/img/a14.png?raw=true) 
+
+  Wait for it to complete.
+ 
+   ![alt text](https://github.com/macielo-bumalay/DevOps-Project-2/blob/main/img/a15.png?raw=true) 
+
+  Create an Admin user account 
+ 
+   ![alt text](https://github.com/macielo-bumalay/DevOps-Project-2/blob/main/img/a16.png?raw=true) 
+
+
+Your now at the homepage of Jenkins, Click on Manage Jenkins
+
+ ![alt text](https://github.com/macielo-bumalay/DevOps-Project-2/blob/main/img/a17.png?raw=true) 
 
 Install below plugins
 
