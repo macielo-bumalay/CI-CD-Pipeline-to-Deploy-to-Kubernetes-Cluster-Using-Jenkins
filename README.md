@@ -82,13 +82,15 @@ Click “Launch Instances” to create the instance.
         sudo systemctl enable docker
         docker ps
   
-        
+ 
+
+     
   <h4>Step 2. Create a Sonarqube container</h4>
+
+         docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P2.png?raw=true) 
 
- 
-     docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 
  ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P3.png?raw=true) 
 
@@ -188,10 +190,6 @@ You will see the stage view like this
 ![alt text](https://github.com/macielo-bumalay/DevOps-Project-1/blob/main/img/P5.png?raw=true) 
 
  <h3> Configure Sonar Server </h3>
-
-   `Access the Sonar Server: ` Enter Instance's IP address and 9000 as port
-
-     <Ec2-ip:9000>
 
  Click on `Administration` --> `Security` --> `Users` --> Click on `Tokens and Update Token`  --> Give it a name  --> and click on `Generate Token`
  Click on Update Token
